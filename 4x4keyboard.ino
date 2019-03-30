@@ -31,7 +31,7 @@ static const uint8_t ColPins[NUM_COLS] = {6,7,8,9};
 
 //// Global variables
 // Counter for how long a button has been pressed
-static uint8_t debounce_count[NUM_COLS][NUM_ROWS];
+static uint8_t debounce_count[NUM_ROWS][NUM_COLS];
 
 void setup()
 {
