@@ -23,10 +23,6 @@
 #define KEY_OPTION KEY_LEFT_ALT
 #define KEY_EJECT HID_CONSUMER_EJECT
 
-//// Enum for press or release
-enum event {press, release};
-void doMacro(uint8_t row, uint8_t col, void callback(uint8_t));
-
 //// Keyboard matrix pin assignments
 // Pins connected to rows
 static const uint8_t RowPins[NUM_ROWS] = {2,3,4,5};
@@ -93,7 +89,7 @@ void loop()
         // Trigger key press
         if ( debounce_count[currentRow][currentCol] == MAX_DEBOUNCE )
         { 
-          doMacro(currentRow,currentCol,(void (*)(uint8_t)) Keyboard.press);
+          doMacro(currentRow,currentCol, &DefaultKeyboardAPI::press);
         }
       }
     }
@@ -105,7 +101,7 @@ void loop()
         debounce_count[currentRow][currentCol]--;
         if ( debounce_count[currentRow][currentCol] == 0 )
         { // If debounce counter hits 0
-          doMacro(currentRow,currentCol,(void (*)(uint8_t)) Keyboard.release);
+          doMacro(currentRow,currentCol, &DefaultKeyboardAPI::release);
         }
       }
     }
@@ -123,7 +119,7 @@ void loop()
 //  }
 }
 
-void doMacro(uint8_t row, uint8_t col, void (*callback)(uint8_t))
+void doMacro(uint8_t row, uint8_t col, size_t (DefaultKeyboardAPI::*callback)(ConsumerKeycode))
 {
   switch(row)
   {
@@ -134,16 +130,16 @@ void doMacro(uint8_t row, uint8_t col, void (*callback)(uint8_t))
           Keyboard.print(">_<");
           break;
         case 1: // Switch between tabs inside adobe programs
-          callback(KEY_COMMAND);
-          callback('~');
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback('~');
           break;
         case 2: // Command key
-          callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_COMMAND);
           break;
         case 3: // OSX Sleep
-          callback(KEY_COMMAND);
-          callback(KEY_OPTION);
-          callback(KEY_EJECT);
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_OPTION);
+          Keyboard.*callback(KEY_EJECT);
           break;
       }
       break;
@@ -151,20 +147,20 @@ void doMacro(uint8_t row, uint8_t col, void (*callback)(uint8_t))
       switch(col)
       {
         case 0: // Adobe Illustrator: Lock selected
-          callback(KEY_COMMAND);
-          callback(KEY_2);
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_2);
           break;
         case 1: // Adobe Illustrator: Unlock selected
-          callback(KEY_COMMAND);
-          callback(KEY_OPTION);
-          callback(KEY_2);
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_OPTION);
+          Keyboard.*callback(KEY_2);
           break;
         case 2: // Shift+Tab (to switch to previous app)
-          callback(KEY_LEFT_SHIFT);
-          callback(KEY_TAB);
+          Keyboard.*callback(KEY_LEFT_SHIFT);
+          Keyboard.*callback(KEY_TAB);
           break;
         case 3: // Tab (to switch to next app)
-          callback(KEY_TAB);
+          Keyboard.*callback(KEY_TAB);
           break;
       }
       break;
@@ -172,18 +168,18 @@ void doMacro(uint8_t row, uint8_t col, void (*callback)(uint8_t))
           switch(col)
       {
         case 0: // Adobe Photoshop: Decrease brush size
-          callback('[');
+          Keyboard.*callback('[');
           break;
         case 1: // Adobe Photoshop: Increase brush size
-          callback(']');
+          Keyboard.*callback(']');
           break;
         case 2: // Adobe Illustrator: Blob brush
-          callback(KEY_LEFT_SHIFT);
-          callback('b');
+          Keyboard.*callback(KEY_LEFT_SHIFT);
+          Keyboard.*callback('b');
           break;
         case 3: // Adobe Illustrator: Merge shape
-          callback(KEY_LEFT_SHIFT);
-          callback('m');
+          Keyboard.*callback(KEY_LEFT_SHIFT);
+          Keyboard.*callback('m');
           break;
       }
       break;
@@ -191,22 +187,22 @@ void doMacro(uint8_t row, uint8_t col, void (*callback)(uint8_t))
           switch(col)
       {
         case 0: // Undo
-          callback(KEY_COMMAND);
-          callback('z');
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback('z');
           break;
         case 1: // Redo
-          callback(KEY_COMMAND);
-          callback(KEY_LEFT_SHIFT);
-          callback('z');
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_LEFT_SHIFT);
+          Keyboard.*callback('z');
           break;
         case 2: // Export
-          callback(KEY_COMMAND);
-          callback(KEY_OPTION);
-          callback('e');
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback(KEY_OPTION);
+          Keyboard.*callback('e');
           break;
         case 3: // Save
-          callback(KEY_COMMAND);
-          callback('s');
+          Keyboard.*callback(KEY_COMMAND);
+          Keyboard.*callback('s');
           break;
       }
       break;
